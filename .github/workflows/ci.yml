@@ -14,10 +14,10 @@ jobs:
       - name: Checkout repository # Paso 1: Descargar el código fuente del repositorio
         uses: actions/checkout@v3
 
-      - name: Use Node.js 18 # Paso 2: Configurar Node.js
+      - name: Use Node.js 22 # Paso 2: Configurar Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "18.x"
+          node-version: "22.x"
 
       - name: Install dependencies # Paso 3: Instalar dependencias
         run: npm install
@@ -30,7 +30,7 @@ jobs:
 
 
       - name: Build Docker image     # Paso 6: Crear la imagen Docker de la app
-        run: docker build --build-arg NODE_VERSION=18 -t angular_ci_cd .
+        run: docker build --build-arg NODE_VERSION=22 -t angular_ci_cd .
 
 
       - name: Log in to Docker Hub # Paso 7: Iniciar sesión en Docker Hub
