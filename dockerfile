@@ -8,6 +8,6 @@ RUN npm run build --prod
 
 # servir app angular
 FROM nginx:alpine
-COPY --from=builder /app/dist/angular-ci-cd /usr/share/nginx/html
+COPY --from=builder /app/dist/angular_ci_cd /usr/share/nginx/html
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
