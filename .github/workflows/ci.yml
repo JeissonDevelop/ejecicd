@@ -42,5 +42,5 @@ jobs:
       - name: Push Docker image to Docker Hub # Paso 8: Subir la imagen a Docker Hub
         # Renombra la imagen local con el formato usuario/imagen:tag y la sube
         run: |
-          docker tag angular_ci_cd ${{ secrets.DOCKER_USERNAME }}/angular_ci_cd:latest
-          docker push ${{ secrets.DOCKER_USERNAME }}/angular_ci_cd:latest
+          docker tag angular_ci_cd jeissondev1/angular_ci_cd:latest
+          docker push jeissondev1/angular_ci_cd:latest
