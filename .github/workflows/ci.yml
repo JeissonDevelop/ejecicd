@@ -11,37 +11,39 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository # Paso 1: Descargar el código fuente del repositorio
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Use Node.js 22 # Paso 2: Configurar Node.js
+      - name: Use Node.js 22
         uses: actions/setup-node@v3
         with:
           node-version: "22.x"
 
-      - name: Install dependencies # Paso 3: Instalar dependencias
+      - name: Install dependencies
         run: npm install
 
-      - name: Run tests # Paso 4: Ejecutar pruebas
+      - name: Run tests
         run: npm test -- --watch=false --browsers=ChromeHeadless || echo "No hay pruebas aún"
 
-      - name: Build project # Paso 5: Construir el proyecto
-        run: npm run build -- --prod || echo "Build completado con advertencias"
+      - name: Build project
+        run: npm run build -- --configuration production || echo "Build completado con advertencias"
 
+      - name: Build Docker image
+        run: docker build -t angular_ci_cd .
 
-      - name: Build Docker image     # Paso 6: Crear la imagen Docker de la app
-        run: docker build --build-arg NODE_VERSION=22 -t angular_ci_cd .
-
-
-      - name: Log in to Docker Hub # Paso 7: Iniciar sesión en Docker Hub
+      - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-      
-      - name: Push Docker image to Docker Hub # Paso 8: Subir la imagen a Docker Hub
-        # Renombra la imagen local con el formato usuario/imagen:tag
+
+      - name: Push Docker image to Docker Hub
         run: |
           docker tag angular_ci_cd ${{ secrets.DOCKER_USERNAME }}/angular_ci_cd:latest
           docker push ${{ secrets.DOCKER_USERNAME }}/angular_ci_cd:latest
 
+      - name: Tag Docker image with commit SHA (opcional)
+        run: |
+          IMAGE_TAG=${GITHUB_SHA::8}
+          docker tag angular_ci_cd ${{ secrets.DOCKER_USERNAME }}/angular_ci_cd:$IMAGE_TAG
+          docker push ${{ secrets.DOCKER_USERNAME }}/angular_ci_cd:$IMAGE_TAG
